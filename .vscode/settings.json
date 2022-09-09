@@ -1,0 +1,9 @@
+{
+  "rest-client.environmentVariables": {
+    "local": {
+      "base": "http://localhost:3000/v1",
+      "token": ""
+    },
+    "production": {}
+  }
+}
