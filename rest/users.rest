@@ -1,0 +1,36 @@
+// create user - admin
+POST {{base}}/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "guest",
+    "email": "guest@gmail.com",
+    "password": "test123456",
+    "role": "user"
+}
+
+###
+// get all users - admin
+GET {{base}}/users
+Authorization: Bearer {{token}}
+
+###
+// get user by id - admin | logged in user can fetch only their own
+GET {{base}}/users/631b3e11730d0717dc5a5548
+Authorization: Bearer {{token}}
+
+###
+// update a user - admin | logged in user can update only their own
+PATCH {{base}}/users/631b3e11730d0717dc5a5548
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "guest"
+}
+
+###
+// delete user by id - admin | logged in user can delete only their own
+DELETE {{base}}/users/631b3e11730d0717dc5a5548
+Authorization: Bearer {{token}}

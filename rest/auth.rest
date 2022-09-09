@@ -1,4 +1,4 @@
-// register new user
+// register
 POST {{base}}/auth/register
 Content-Type: application/json
 
@@ -9,11 +9,42 @@ Content-Type: application/json
 }
 
 ###
-// login user
+
+// login
 POST {{base}}/auth/login
 Content-Type: application/json
 
 {
     "email": "dani@gmail.com",
     "password": "test123456"
+}
+
+###
+
+// logout
+POST {{base}}/auth/logout
+Content-Type: application/json
+
+{
+    "refreshToken": ""
+}
+
+###
+
+// refresh token
+POST {{base}}/auth/refresh-tokens
+Content-Type: application/json
+
+{
+    "refreshToken": ""
+}
+
+###
+// reset password
+POST {{base}}/auth/reset-password/?token=
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "password": "test1234567"
 }
