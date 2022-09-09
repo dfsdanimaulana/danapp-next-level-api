@@ -1,2 +1,13 @@
 // get psts
 GET {{base}}/posts
+
+###
+// create post
+POST {{base}}/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "user": "631a25f4ae342b395cad8996",
+    "caption": "caption"
+}
