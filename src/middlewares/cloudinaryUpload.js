@@ -1,4 +1,4 @@
-const uploader = require('../services/upload.service')
+const { uploadService } = require('../services')
 
 const uploadPost = (param, uploadPreset) => async (req, res, next) => {
   if (!req.file && !req.files) {
@@ -6,13 +6,14 @@ const uploadPost = (param, uploadPreset) => async (req, res, next) => {
   }
 
   if (req.file) {
-    const upload = await uploader.uploadImage(req.file, uploadPreset)
-    req.body[param] = [upload]
+    const data = await uploadService.uploadImage(req.file, uploadPreset) // return object
+    req.body[param] = [data]
     next()
   }
 
   if (req.files) {
-    await uploader.uploadImages(req.body, param)(req.files, uploadPreset)
+    const datas = await uploadService.uploadImages(req.files, uploadPreset) // return array of object
+    req.body[param] = datas
     next()
   }
 }
