@@ -3,18 +3,13 @@ const validator = require('validator')
 const { toJSON, paginate } = require('./plugins')
 
 const imageSchema = mongoose.Schema({
-  publicId: {
+  public_id: {
     type: String,
     required: true
   },
-  url: {
+  secure_url: {
     type: String,
-    required: true,
-    validate(value) {
-      if (!validator.isDataURI(value)) {
-        throw new Error('invalid image url')
-      }
-    }
+    required: true
   }
 })
 
@@ -65,6 +60,7 @@ const postSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 postSchema.plugin(toJSON)
+imageSchema.plugin(toJSON)
 postSchema.plugin(paginate)
 
 /**

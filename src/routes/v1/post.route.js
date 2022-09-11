@@ -1,4 +1,5 @@
 const express = require('express')
+const config = require('../../config/config')
 const auth = require('../../middlewares/auth')
 const validate = require('../../middlewares/validate')
 const postValidation = require('../../validations/post.validation')
@@ -10,7 +11,13 @@ const router = express.Router()
 
 router
   .route('/')
-  .get(postController.getPosts)
-  .post(auth(), multer.upload, cloudinaryUpload.uploadImage, validate(postValidation.createPost), postController.createPost)
+  .get(auth(), postController.getPosts)
+  .post(
+    auth(),
+    multer.uploads('image', 'image/jpeg'),
+    cloudinaryUpload.uploadPost('image', config.cloudinary.upload_post),
+    validate(postValidation.createPost),
+    postController.createPost
+  )
 
 module.exports = router
