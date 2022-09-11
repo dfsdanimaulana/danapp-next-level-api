@@ -1,11 +1,13 @@
 const httpStatus = require('http-status')
-// const pick = require('../utils/pick')
-// const ApiError = require('../utils/ApiError')
+const pick = require('../utils/pick')
 const catchAsync = require('../utils/catchAsync')
 const { postService } = require('../services')
 
 const getPosts = catchAsync(async (req, res) => {
-  res.status(httpStatus.OK).send({ message: 'post route' })
+  const filter = pick(req.query, ['user'])
+  const options = pick(req.query, ['sortBy', 'limit', 'page'])
+  const results = await postService.queryPosts(filter, options)
+  res.send(results)
 })
 
 const createPost = catchAsync(async (req, res) => {

@@ -60,8 +60,9 @@ const postSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 postSchema.plugin(toJSON)
-imageSchema.plugin(toJSON)
 postSchema.plugin(paginate)
+
+imageSchema.plugin(toJSON)
 
 /**
  * @typedef Post
