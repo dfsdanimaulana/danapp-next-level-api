@@ -1,4 +1,6 @@
 const multer = require('multer')
+const httpStatus = require('http-status')
+const ApiError = require('../utils/ApiError')
 
 const storage = multer.memoryStorage()
 
@@ -12,7 +14,7 @@ const upload = (param, mimetype) =>
         cb(null, true)
       } else {
         cb(null, false)
-        return cb(new Error(`Invalid upload: fieldname should be ${param} and ${mimetype} format`))
+        return cb(new ApiError(httpStatus.FORBIDDEN, `Invalid upload: fieldname should be ${param} and ${mimetype} format`))
       }
     }
   }).single(param)
@@ -25,7 +27,7 @@ const uploads = (param, mimetype, max) =>
         cb(null, true)
       } else {
         cb(null, false)
-        return cb(new Error(`Invalid upload: fieldname should be ${param} and ${mimetype} format`))
+        return cb(new ApiError(httpStatus.FORBIDDEN, `Invalid upload: fieldname should be ${param} and ${mimetype} format`))
       }
     }
   }).array(param, max)

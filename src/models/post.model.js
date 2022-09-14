@@ -5,7 +5,8 @@ const { toJSON, paginate } = require('./plugins')
 const imageSchema = mongoose.Schema({
   public_id: {
     type: String,
-    required: true
+    required: true,
+    private: true
   },
   secure_url: {
     type: String,
@@ -16,42 +17,43 @@ const imageSchema = mongoose.Schema({
 const postSchema = mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.SchemaTypes.ObjectId,
       ref: 'User',
       required: true
-    },
-    uniqueId: {
-      type: String,
-      unique: true,
-      validate(value) {
-        if (!validator.isAlpha(value)) {
-          throw new Error('uniqueId must be alpha string only')
-        }
-      }
     },
     image: [imageSchema],
     caption: {
       type: String,
-      maxlength: 100,
-      default: ' '
+      maxlength: 100
     },
     hashtag: [
       {
-        type: String
+        type: String,
+        trim: true
       }
     ],
     comment: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'PostComment'
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Comment'
       }
     ],
     like: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.SchemaTypes.ObjectId,
         ref: 'User'
       }
-    ]
+    ],
+    uniqueString: {
+      type: String,
+      unique: true,
+      trim: true,
+      validate(value) {
+        if (!validator.isAlpha(value)) {
+          throw new Error('uniqueString must be alpha string only')
+        }
+      }
+    }
   },
   {
     timestamps: true

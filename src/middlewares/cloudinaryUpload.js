@@ -1,6 +1,12 @@
 const { uploadService } = require('../services')
 
 const uploadPost = (param, uploadPreset) => async (req, res, next) => {
+  if (req.body.image) {
+    const data = await uploadService.uploadImages(req.body.image, uploadPreset)
+    req.body.image = data
+    next()
+  }
+
   if (!req.file && !req.files) {
     throw new Error('file required')
   }

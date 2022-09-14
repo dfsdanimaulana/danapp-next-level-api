@@ -13,6 +13,13 @@ const createPost = {
   })
 }
 
+const getPost = {
+  params: Joi.object().keys({
+    postId: Joi.string().custom(objectId)
+  })
+}
+
 module.exports = {
-  createPost
+  createPost,
+  getPost
 }

@@ -1,11 +1,12 @@
+const httpStatus = require('http-status')
+const ApiError = require('../utils/ApiError')
 const { Post } = require('../models')
-
 /**
  * Create new post
  * @param {Object} postBody
  * @returns {Promise<Post>}
  */
-const createPost = (postBody) => {
+const createPost = async (postBody) => {
   return Post.create(postBody)
 }
 
@@ -23,4 +24,21 @@ const queryPosts = async (filter, options) => {
   return posts
 }
 
-module.exports = { queryPosts, createPost }
+/**
+ * get post by post id
+ * @param {ObjectId} postId
+ * @returns {Promise<Post>}
+ */
+const getPostById = async (postId) => {
+  const post = Post.findById(postId)
+  if (!post) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
+  }
+  return post
+}
+
+module.exports = {
+  queryPosts,
+  createPost,
+  getPostById
+}
