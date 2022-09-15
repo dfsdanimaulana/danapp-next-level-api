@@ -1,2 +1,0 @@
-// show documentations in development mode only
-GET {{base}}/docs
