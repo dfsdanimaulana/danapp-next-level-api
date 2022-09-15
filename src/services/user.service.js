@@ -1,6 +1,7 @@
 const httpStatus = require('http-status')
 const { User } = require('../models')
 const ApiError = require('../utils/ApiError')
+const userDataService = require('./userData.service')
 
 /**
  * Create a user
@@ -11,7 +12,14 @@ const createUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken')
   }
-  return User.create(userBody)
+
+  const user = await User.create(userBody)
+  if (!user) {
+    throw new ApiError(httpStatus.FAILED_DEPENDENCY, 'Failed to create new user')
+  }
+  await userDataService.createUserData(user)
+
+  return user
 }
 
 /**
@@ -75,7 +83,9 @@ const deleteUserById = async (userId) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found')
   }
-  await user.remove()
+
+  await Promise.all([user.remove(), userDataService.deleteUserDataByUserId(user.id)])
+
   return user
 }
 
