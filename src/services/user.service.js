@@ -17,7 +17,7 @@ const createUser = async (userBody) => {
   if (!user) {
     throw new ApiError(httpStatus.FAILED_DEPENDENCY, 'Failed to create new user')
   }
-  await userDataService.createUserData(user)
+  await userDataService.createUserData({ user: user.id })
 
   return user
 }

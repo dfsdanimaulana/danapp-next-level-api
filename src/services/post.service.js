@@ -1,13 +1,22 @@
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 const { Post } = require('../models')
+const userDataService = require('./userData.service')
+
 /**
  * Create new post
  * @param {Object} postBody
  * @returns {Promise<Post>}
  */
 const createPost = async (postBody) => {
-  return Post.create(postBody)
+  const post = await Post.create(postBody)
+  // save post id to user post data
+  const update = await userDataService.updateUserDataPost(postBody.user, post.id)
+  if (!update) {
+    throw new ApiError(httpStatus.FAILED_DEPENDENCY, 'failed to update user data post')
+  }
+
+  return post
 }
 
 /**
@@ -37,8 +46,28 @@ const getPostById = async (postId) => {
   return post
 }
 
+/**
+ * Delete post by id
+ * @param {ObjectId} postId
+ * @returns {Promise<Post>}
+ */
+const deletePostById = async (userId, postId) => {
+  const post = await getPostById(postId)
+  if (!post) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
+  }
+  const deleteUserDataPost = await userDataService.updateUserDataPost(userId, postId)
+  if (!deleteUserDataPost) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Failed to delete post id in user data')
+  }
+  await post.remove()
+
+  return post
+}
+
 module.exports = {
   queryPosts,
   createPost,
-  getPostById
+  getPostById,
+  deletePostById
 }

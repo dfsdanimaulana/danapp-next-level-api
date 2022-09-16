@@ -22,6 +22,8 @@ router
 
 router.route('/:postId').get(auth(), validate(postValidation.getPost), postController.getPost)
 
+router.route('/:userId').delete(auth('managePost'), validate(postValidation.deletePost), postController.deletePost)
+
 module.exports = router
 
 /**

@@ -4,13 +4,25 @@ const catchAsync = require('../utils/catchAsync')
 const { userDataService } = require('../services')
 
 const getUserData = catchAsync(async (req, res) => {
-  const result = await userDataService.queryUserData(req.params.userId)
+  const result = await userDataService.getUserDataByUserId(req.params.userId)
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User data not found')
   }
   res.send(result)
 })
 
+const createUserData = catchAsync(async (req, res) => {
+  const userData = await userDataService.createUserData(req.body)
+  res.status(httpStatus.CREATED).send(userData)
+})
+
+const updateUserData = catchAsync(async (req, res) => {
+  const userData = await userDataService.updateUserDataUserById(req.params.userId, req.body)
+  res.send(userData)
+})
+
 module.exports = {
-  getUserData
+  getUserData,
+  createUserData,
+  updateUserData
 }

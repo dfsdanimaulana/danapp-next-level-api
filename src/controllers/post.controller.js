@@ -24,8 +24,14 @@ const getPost = catchAsync(async (req, res) => {
   res.send(post)
 })
 
+const deletePost = catchAsync(async (req, res) => {
+  await postService.deletePostById(req.body.userId, req.body.postId)
+  res.status(httpStatus.NO_CONTENT).send()
+})
+
 module.exports = {
   getPost,
   getPosts,
-  createPost
+  createPost,
+  deletePost
 }

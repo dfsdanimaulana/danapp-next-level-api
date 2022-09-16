@@ -109,6 +109,11 @@ imageSchema.plugin(toJSON)
 socialSchema.plugin(toJSON)
 addressSchema.plugin(toJSON)
 
+userDataSchema.statics.isPostExists = async function (userId, postId) {
+  const data = await this.findOne({ user: userId })
+  return !!data.post.includes(postId)
+}
+
 /**
  * @typedef UserData
  */

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
 const { toJSON, paginate } = require('./plugins')
 
 const imageSchema = mongoose.Schema({
@@ -43,17 +42,7 @@ const postSchema = mongoose.Schema(
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'User'
       }
-    ],
-    uniqueString: {
-      type: String,
-      unique: true,
-      trim: true,
-      validate(value) {
-        if (!validator.isAlpha(value)) {
-          throw new Error('uniqueString must be alpha string only')
-        }
-      }
-    }
+    ]
   },
   {
     timestamps: true
