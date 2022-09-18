@@ -1,7 +1,7 @@
 const httpStatus = require('http-status')
 const { User } = require('../models')
 const ApiError = require('../utils/ApiError')
-const userDataService = require('./userData.service')
+const userDataService = require('./user-data.service')
 
 /**
  * Create a user
