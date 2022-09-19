@@ -4,8 +4,7 @@ const { toJSON, paginate } = require('./plugins')
 const imageSchema = mongoose.Schema({
   public_id: {
     type: String,
-    required: true,
-    private: true
+    required: true
   },
   secure_url: {
     type: String,

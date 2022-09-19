@@ -3,7 +3,6 @@ const { objectId } = require('./custom.validation')
 
 const createPost = {
   body: Joi.object().keys({
-    user: Joi.string().required().custom(objectId),
     image: Joi.array()
       .items(
         Joi.object().keys({
@@ -27,10 +26,6 @@ const getPost = {
 
 const deletePost = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId)
-  }),
-  body: Joi.object().keys({
-    userId: Joi.string().required().custom(objectId),
     postId: Joi.string().required().custom(objectId)
   })
 }

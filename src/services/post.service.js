@@ -1,17 +1,20 @@
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 const { Post } = require('../models')
-const userDataService = require('./userData.service')
+const userDataService = require('./user-data.service')
+const uploadService = require('./upload.service')
 
 /**
  * Create new post
  * @param {Object} postBody
  * @returns {Promise<Post>}
  */
-const createPost = async (postBody) => {
+const createPost = async (req) => {
+  const { ...postBody } = req.body
+  postBody.user = req.user.id
   const post = await Post.create(postBody)
   // save post id to user post data
-  const update = await userDataService.updateUserDataPost(postBody.user, post.id)
+  const update = await userDataService.updateUserDataPost(req.user.id, post.id)
   if (!update) {
     throw new ApiError(httpStatus.FAILED_DEPENDENCY, 'failed to update user data post')
   }
@@ -51,15 +54,24 @@ const getPostById = async (postId) => {
  * @param {ObjectId} postId
  * @returns {Promise<Post>}
  */
-const deletePostById = async (userId, postId) => {
+const deletePostById = async (req) => {
+  const { postId } = req.params
   const post = await getPostById(postId)
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
   }
-  const deleteUserDataPost = await userDataService.updateUserDataPost(userId, postId)
+
+  if (post.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Not allowed')
+  }
+  const deleteUserDataPost = await userDataService.updateUserDataPost(post.user, postId)
   if (!deleteUserDataPost) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Failed to delete post id in user data')
   }
+
+  // delete image in cloudinary
+  await Promise.all(post.image.map((image) => uploadService.destroyImage(image)))
+
   await post.remove()
 
   return post

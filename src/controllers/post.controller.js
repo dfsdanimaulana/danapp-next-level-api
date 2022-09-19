@@ -5,7 +5,7 @@ const catchAsync = require('../utils/catchAsync')
 const { postService } = require('../services')
 
 const createPost = catchAsync(async (req, res) => {
-  const post = await postService.createPost(req.body)
+  const post = await postService.createPost(req)
   res.status(httpStatus.CREATED).send(post)
 })
 
@@ -25,7 +25,7 @@ const getPost = catchAsync(async (req, res) => {
 })
 
 const deletePost = catchAsync(async (req, res) => {
-  await postService.deletePostById(req.body.userId, req.body.postId)
+  await postService.deletePostById(req)
   res.status(httpStatus.NO_CONTENT).send()
 })
 
