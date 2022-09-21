@@ -29,14 +29,11 @@ const createUserData = {
 
 const getUserData = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId)
+    userId: Joi.string().required().custom(objectId)
   })
 }
 
 const updateUserData = {
-  params: Joi.object().keys({
-    userId: Joi.string().custom(objectId)
-  }),
   body: Joi.object()
     .keys({
       displayName: Joi.string().max(20),
@@ -65,13 +62,13 @@ const updateUserData = {
 
 const deleteUserData = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId)
+    userId: Joi.string().required().custom(objectId)
   })
 }
 
 const updateSavedPost = {
   body: Joi.object().keys({
-    postId: Joi.string().custom(objectId)
+    postId: Joi.string().required().custom(objectId)
   })
 }
 

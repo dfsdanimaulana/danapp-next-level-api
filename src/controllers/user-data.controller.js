@@ -17,7 +17,7 @@ const createUserData = catchAsync(async (req, res) => {
 })
 
 const updateUserData = catchAsync(async (req, res) => {
-  const userData = await userDataService.updateUserDataUserById(req.params.userId, req.body)
+  const userData = await userDataService.updateUserDataUserById(req.user.id, req.body)
   res.send(userData)
 })
 
