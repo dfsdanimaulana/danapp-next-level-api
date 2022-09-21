@@ -69,9 +69,16 @@ const deleteUserData = {
   })
 }
 
+const updateSavedPost = {
+  body: Joi.object().keys({
+    postId: Joi.string().custom(objectId)
+  })
+}
+
 module.exports = {
   createUserData,
   getUserData,
   updateUserData,
-  deleteUserData
+  deleteUserData,
+  updateSavedPost
 }

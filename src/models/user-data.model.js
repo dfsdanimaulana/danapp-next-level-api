@@ -114,6 +114,11 @@ userDataSchema.statics.isPostExists = async function (userId, postId) {
   return !!data.post.includes(postId)
 }
 
+userDataSchema.statics.isSavedPostExists = async function (userId, postId) {
+  const data = await this.findOne({ user: userId })
+  return !!data.savedPost.includes(postId)
+}
+
 /**
  * @typedef UserData
  */

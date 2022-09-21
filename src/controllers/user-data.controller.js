@@ -21,8 +21,14 @@ const updateUserData = catchAsync(async (req, res) => {
   res.send(userData)
 })
 
+const updateSavedPost = catchAsync(async (req, res) => {
+  const userData = await userDataService.updateUserSavedPost(req.user.id, req.body.postId)
+  res.send(userData)
+})
+
 module.exports = {
   getUserData,
   createUserData,
-  updateUserData
+  updateUserData,
+  updateSavedPost
 }

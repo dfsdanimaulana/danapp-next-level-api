@@ -75,6 +75,30 @@ const updateUserDataPost = async (userId, postId) => {
   }
 
   const update = await UserData.findOneAndUpdate({ user: userId }, updateOption)
+  if (!update) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User data not found')
+  }
+
+  return update
+}
+
+const updateUserSavedPost = async (userId, postId) => {
+  let updateOption = {
+    $addToSet: {
+      savedPost: postId
+    }
+  }
+  if (await UserData.isSavedPostExists(userId, postId)) {
+    updateOption = {
+      $pull: {
+        savedPost: postId
+      }
+    }
+  }
+  const update = await UserData.findOneAndUpdate({ user: userId }, updateOption)
+  if (!update) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User data not found')
+  }
 
   return update
 }
@@ -85,5 +109,6 @@ module.exports = {
   deleteUserData,
   deleteUserDataByUserId,
   updateUserDataUserById,
-  updateUserDataPost
+  updateUserDataPost,
+  updateUserSavedPost
 }
