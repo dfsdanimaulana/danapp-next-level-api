@@ -19,7 +19,7 @@ const upload = (param, mimetype) =>
     }
   }).single(param)
 
-const uploads = (param, mimetype, max) =>
+const uploads = (param, mimetype, max = 10) =>
   multer({
     storage,
     fileFilter: (req, file, cb) => {

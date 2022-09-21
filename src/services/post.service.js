@@ -42,11 +42,7 @@ const queryPosts = async (filter, options) => {
  * @returns {Promise<Post>}
  */
 const getPostById = async (postId) => {
-  const post = Post.findById(postId)
-  if (!post) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
-  }
-  return post
+  return Post.findById(postId)
 }
 
 /**
@@ -60,7 +56,6 @@ const deletePostById = async (req) => {
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
   }
-
   if (post.user.toString() !== req.user.id && req.user.role !== 'admin') {
     throw new ApiError(httpStatus.FORBIDDEN, 'Not allowed')
   }
@@ -68,12 +63,27 @@ const deletePostById = async (req) => {
   if (!deleteUserDataPost) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Failed to delete post id in user data')
   }
-
   // delete image in cloudinary
   await Promise.all(post.image.map((image) => uploadService.destroyImage(image)))
-
   await post.remove()
+  return post
+}
 
+/**
+ * update post by id
+ * @param {Object} req
+ * @returns {Promise<Post>}
+ */
+const updatePostById = async (req) => {
+  const post = await getPostById(req.params.postId)
+  if (!post) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
+  }
+  if (post.user.toString() !== req.user.id) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Not allowed')
+  }
+  Object.assign(post, req.body)
+  await post.save()
   return post
 }
 
@@ -81,5 +91,6 @@ module.exports = {
   queryPosts,
   createPost,
   getPostById,
-  deletePostById
+  deletePostById,
+  updatePostById
 }

@@ -30,8 +30,20 @@ const deletePost = {
   })
 }
 
+const updatePost = {
+  params: Joi.object().keys({
+    postId: Joi.string().required().custom(objectId)
+  }),
+  body: Joi.object()
+    .keys({
+      caption: Joi.string().max(100),
+      hashtag: Joi.string()
+    })
+    .min(1)
+}
 module.exports = {
   createPost,
   getPost,
-  deletePost
+  deletePost,
+  updatePost
 }
