@@ -12,6 +12,20 @@ const createUserData = async (userDataBody) => {
 }
 
 /**
+ * Query for posts
+ * @param {Object} filter - Mongo filter
+ * @param {Object} options - Query options
+ * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
+ * @param {number} [options.limit] - Maximum number of results per page (default = 10)
+ * @param {number} [options.page] - Current page (default = 1)
+ * @returns {Promise<QueryResult>}
+ */
+const queryUserDatas = async (filter, options) => {
+  const datas = await UserData.paginate(filter, options)
+  return datas
+}
+
+/**
  *  get user data by user id
  * @param {ObjectId} userId object of User collection
  * @returns {Promise<UserData>}
@@ -103,12 +117,31 @@ const updateUserSavedPost = async (userId, postId) => {
   return update
 }
 
+const updateUserAvatar = async (userId, image) => {
+  const data = await UserData.findOneAndUpdate(
+    { user: userId },
+    {
+      $set: {
+        image: {
+          avatar: image[0]
+        }
+      }
+    }
+  )
+  if (!data) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Failed to update user avatar')
+  }
+  return data
+}
+
 module.exports = {
   createUserData,
+  queryUserDatas,
   getUserDataByUserId,
   deleteUserData,
   deleteUserDataByUserId,
   updateUserDataUserById,
   updateUserDataPost,
-  updateUserSavedPost
+  updateUserSavedPost,
+  updateUserAvatar
 }

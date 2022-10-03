@@ -72,10 +72,24 @@ const updateSavedPost = {
   })
 }
 
+const updateUserAvatar = {
+  body: Joi.object().keys({
+    image: Joi.array()
+      .items(
+        Joi.object().keys({
+          public_id: Joi.string().required(),
+          secure_url: Joi.string().uri().required()
+        })
+      )
+      .required()
+  })
+}
+
 module.exports = {
   createUserData,
   getUserData,
   updateUserData,
   deleteUserData,
-  updateSavedPost
+  updateSavedPost,
+  updateUserAvatar
 }

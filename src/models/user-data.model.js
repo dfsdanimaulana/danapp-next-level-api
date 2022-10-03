@@ -3,12 +3,26 @@ const { toJSON, paginate } = require('./plugins')
 
 const imageSchema = mongoose.Schema({
   avatar: {
-    type: String,
-    default: 'https://res.cloudinary.com/dfsdanimaulana/image/upload/v1661665020/thumbnails/male_avatar_kzr9sl.png'
+    public_id: {
+      type: String,
+      required: true
+    },
+    secure_url: {
+      type: String,
+      required: true,
+      default: 'https://res.cloudinary.com/dfsdanimaulana/image/upload/v1661665020/thumbnails/male_avatar_kzr9sl.png'
+    }
   },
   cover: {
-    type: String,
-    default: 'https://res.cloudinary.com/dfsdanimaulana/image/upload/v1663135182/thumbnails/IMG_6156_nsu9ti.jpg'
+    public_id: {
+      type: String,
+      required: true
+    },
+    secure_url: {
+      type: String,
+      required: true,
+      default: 'https://res.cloudinary.com/dfsdanimaulana/image/upload/v1663135182/thumbnails/IMG_6156_nsu9ti.jpg'
+    }
   }
 })
 
