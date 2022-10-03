@@ -1,7 +1,35 @@
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
-const { Comment } = require('../models')
-const postService = require('./post.service')
+const { Comment, Post } = require('../models')
+
+/**
+ *
+ * @param {String} postId
+ * @param {String} commentId
+ * @returns {Promise}
+ */
+const updatePostComment = async (postId, commentId) => {
+  let updateOption = {
+    $addToSet: {
+      comment: commentId
+    }
+  }
+
+  if (await Post.isCommentExists(postId, commentId)) {
+    updateOption = {
+      $pull: {
+        comment: commentId
+      }
+    }
+  }
+
+  const update = await Post.findByIdAndUpdate(postId, updateOption)
+  if (!update) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
+  }
+
+  return update
+}
 
 /**
  * Create new post
@@ -13,7 +41,7 @@ const createComment = async (req) => {
   commentBody.user = req.user.id
   const comment = new Comment(commentBody)
   // save comment id to post comment data
-  await postService.updatePostComment(req.body.post, comment.id)
+  await updatePostComment(req.body.post, comment.id)
   await comment.save()
   return comment
 }
@@ -55,7 +83,7 @@ const deleteCommentById = async (req) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'Not allowed')
   }
   // delete comment id from post comment data
-  await postService.updatePostComment(comment.post, req.params.commentId)
+  await updatePostComment(comment.post, req.params.commentId)
 
   await comment.remove()
   return comment

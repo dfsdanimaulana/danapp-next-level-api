@@ -7,7 +7,7 @@ const commentService = require('./comment.service')
 
 /**
  * Create new post
- * @param {Object} postBody
+ * @param {Object} req
  * @returns {Promise<Post>}
  */
 const createPost = async (req) => {
@@ -87,40 +87,10 @@ const updatePostById = async (req) => {
   return post
 }
 
-/**
- *
- * @param {String} postId
- * @param {String} commentId
- * @returns {Promise}
- */
-const updatePostComment = async (postId, commentId) => {
-  let updateOption = {
-    $addToSet: {
-      comment: commentId
-    }
-  }
-
-  if (await Post.isCommentExists(postId, commentId)) {
-    updateOption = {
-      $pull: {
-        comment: commentId
-      }
-    }
-  }
-
-  const update = await Post.findByIdAndUpdate(postId, updateOption)
-  if (!update) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
-  }
-
-  return update
-}
-
 module.exports = {
   queryPosts,
   createPost,
   getPostById,
   deletePostById,
-  updatePostComment,
   updatePostById
 }
