@@ -14,11 +14,7 @@ const createPost = async (req) => {
   postBody.user = req.user.id
   const post = await Post.create(postBody)
   // save post id to user post data
-  const update = await userDataService.updateUserDataPost(req.user.id, post.id)
-  if (!update) {
-    throw new ApiError(httpStatus.FAILED_DEPENDENCY, 'failed to update user data post')
-  }
-
+  await userDataService.updateUserDataPost(req.user.id, post.id)
   return post
 }
 
@@ -51,18 +47,16 @@ const getPostById = async (postId) => {
  * @returns {Promise<Post>}
  */
 const deletePostById = async (req) => {
-  const { postId } = req.params
-  const post = await getPostById(postId)
+  const post = await getPostById(req.params.postId)
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
   }
   if (post.user.toString() !== req.user.id && req.user.role !== 'admin') {
     throw new ApiError(httpStatus.FORBIDDEN, 'Not allowed')
   }
-  const deleteUserDataPost = await userDataService.updateUserDataPost(post.user, postId)
-  if (!deleteUserDataPost) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Failed to delete post id in user data')
-  }
+  // delete post id from user post data
+  await userDataService.updateUserDataPost(post.user, req.params.postId)
+
   // delete image in cloudinary
   await Promise.all(post.image.map((image) => uploadService.destroyImage(image)))
   await post.remove()
