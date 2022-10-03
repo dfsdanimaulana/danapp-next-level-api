@@ -41,9 +41,16 @@ const updatePost = {
     })
     .min(1)
 }
+
+const toggleLikePost = {
+  body: Joi.object().keys({
+    post: Joi.string().required().custom(objectId)
+  })
+}
 module.exports = {
   createPost,
   getPost,
   deletePost,
-  updatePost
+  updatePost,
+  toggleLikePost
 }

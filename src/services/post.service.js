@@ -87,10 +87,34 @@ const updatePostById = async (req) => {
   return post
 }
 
+const toggleLikePost = async (postId, userId) => {
+  let updateOption = {
+    $addToSet: {
+      like: userId
+    }
+  }
+
+  if (await Post.isUserLiked(postId, userId)) {
+    updateOption = {
+      $pull: {
+        like: userId
+      }
+    }
+  }
+
+  const update = await Post.findByIdAndUpdate(postId, updateOption)
+  if (!update) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
+  }
+
+  return update
+}
+
 module.exports = {
   queryPosts,
   createPost,
   getPostById,
   deletePostById,
-  updatePostById
+  updatePostById,
+  toggleLikePost
 }

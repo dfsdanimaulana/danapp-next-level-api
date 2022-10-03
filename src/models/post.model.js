@@ -54,12 +54,32 @@ postSchema.plugin(paginate)
 
 imageSchema.plugin(toJSON)
 
+/**
+ * check if comment id exist in post comment array or not
+ * @param {ObjectId} postId
+ * @param {ObjectId} commentId
+ * @returns {Boolean}
+ */
 postSchema.statics.isCommentExists = async function (postId, commentId) {
   const data = await this.findById(postId)
   if (!data) {
     throw new Error('Post no found')
   }
   return !!data.comment.includes(commentId)
+}
+
+/**
+ * check if user like the post or not
+ * @param {ObjectId} postId
+ * @param {ObjectId} userId
+ * @returns {Boolean}
+ */
+postSchema.statics.isUserLiked = async function (postId, userId) {
+  const data = await this.findById(postId)
+  if (!data) {
+    throw new Error('Post no found')
+  }
+  return !!data.like.includes(userId)
 }
 
 /**

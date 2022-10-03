@@ -111,11 +111,14 @@ const deleteCommentByPostId = async (post) => {
   return Comment.deleteMany({ post })
 }
 
+const toggleLikeComment = async () => {}
+
 module.exports = {
   queryComments,
   createComment,
   getCommentById,
   deleteCommentById,
   updateCommentById,
-  deleteCommentByPostId
+  deleteCommentByPostId,
+  toggleLikeComment
 }

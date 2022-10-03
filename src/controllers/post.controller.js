@@ -33,10 +33,17 @@ const updatePost = catchAsync(async (req, res) => {
   const post = await postService.updatePostById(req)
   res.send(post)
 })
+
+const toggleLikePost = catchAsync(async (req, res) => {
+  await postService.toggleLikePost(req.body.post, req.user.id)
+  res.status(httpStatus.NO_CONTENT).send()
+})
+
 module.exports = {
   getPost,
   getPosts,
   createPost,
   deletePost,
-  updatePost
+  updatePost,
+  toggleLikePost
 }

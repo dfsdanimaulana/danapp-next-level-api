@@ -20,6 +20,8 @@ router
     postController.createPost
   )
 
+router.route('/like').patch(auth(), validate(postValidation.toggleLikePost), postController.toggleLikePost)
+
 router
   .route('/:postId')
   .get(auth(), validate(postValidation.getPost), postController.getPost)
