@@ -4,6 +4,7 @@ const userRoute = require('./user.route')
 const userDataRoute = require('./user-data.route')
 const docsRoute = require('./docs.route')
 const postRoute = require('./post.route')
+const commentRoute = require('./comment.route')
 const config = require('../../config/config')
 
 const router = express.Router()
@@ -20,6 +21,10 @@ const defaultRoutes = [
   {
     path: '/posts',
     route: postRoute
+  },
+  {
+    path: '/comments',
+    route: commentRoute
   },
   {
     path: '/user-data',

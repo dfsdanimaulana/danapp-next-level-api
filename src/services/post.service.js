@@ -3,6 +3,7 @@ const ApiError = require('../utils/ApiError')
 const { Post } = require('../models')
 const userDataService = require('./user-data.service')
 const uploadService = require('./upload.service')
+const commentService = require('./comment.service')
 
 /**
  * Create new post
@@ -12,9 +13,10 @@ const uploadService = require('./upload.service')
 const createPost = async (req) => {
   const { ...postBody } = req.body
   postBody.user = req.user.id
-  const post = await Post.create(postBody)
+  const post = new Post(postBody)
   // save post id to user post data
   await userDataService.updateUserDataPost(req.user.id, post.id)
+  await post.save()
   return post
 }
 
@@ -59,6 +61,10 @@ const deletePostById = async (req) => {
 
   // delete image in cloudinary
   await Promise.all(post.image.map((image) => uploadService.destroyImage(image)))
+
+  // delete post comment
+  await commentService.deleteCommentByPostId(req.params.postId)
+
   await post.remove()
   return post
 }
@@ -81,10 +87,40 @@ const updatePostById = async (req) => {
   return post
 }
 
+/**
+ *
+ * @param {String} postId
+ * @param {String} commentId
+ * @returns {Promise}
+ */
+const updatePostComment = async (postId, commentId) => {
+  let updateOption = {
+    $addToSet: {
+      comment: commentId
+    }
+  }
+
+  if (await Post.isCommentExists(postId, commentId)) {
+    updateOption = {
+      $pull: {
+        comment: commentId
+      }
+    }
+  }
+
+  const update = await Post.findByIdAndUpdate(postId, updateOption)
+  if (!update) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Post not found')
+  }
+
+  return update
+}
+
 module.exports = {
   queryPosts,
   createPost,
   getPostById,
   deletePostById,
+  updatePostComment,
   updatePostById
 }

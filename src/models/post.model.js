@@ -54,6 +54,14 @@ postSchema.plugin(paginate)
 
 imageSchema.plugin(toJSON)
 
+postSchema.statics.isCommentExists = async function (postId, commentId) {
+  const data = await this.findById(postId)
+  if (!data) {
+    throw new Error('Post no found')
+  }
+  return !!data.comment.includes(commentId)
+}
+
 /**
  * @typedef Post
  */
